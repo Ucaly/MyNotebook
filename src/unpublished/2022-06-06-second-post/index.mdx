@@ -1,0 +1,60 @@
+---
+title: Jenkinsの起動
+slug: run-jenkins
+image: ./images/jenkins.png
+date: 2020-06-06
+category: Jenkins
+tag: Jenkins
+author: Ucaly
+published: false
+---
+
+<section className="mdx-page">
+
+### Jenkins を走らせる
+
+Jenkins で簡単なテストを走らせるジョブを設定をしてみました。Jenkins のインストールと最低限の設定を学ぶという目的は果たしたのですが、実際にテストを走らせた段階で Chrome のライブラリが足りないといったエラーでジョブがフェイルしてしまいました。Google のサイトで調べたところ Linux 環境では追加のライブラリをインストール必要があるとのことでした。とりあえずリストされていたものを全てインストールしたところ、テストは無事パスしました。
+
+今回テストは Puppeteer と Mocha で作成したのですが、Puppeteer なら Chrome も必要なモジュールも自動でダウンロードしてくれて簡単なのではないかと勝手に思い込んだからなのでした。なので追加ライブラリを大量にインストールしなければならないというのはちょっとショックでした。もちろん一度インストールしてしまえば済むことですが、環境が変わるたびにいちいちまたやるのはめんどうです。Docker でさっとインストールできたらと思い調べてみることにしました。
+
+てっきり公式から出ている Docker イメージがあるって、それを pull するだけかと思ったのですが見つかりません。またまた考えが甘いですね。公式サイトのこちらの情報を土台に Dockerfile を作成してみることにしました。
+
+https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker
+
+### Docker を CentOS にインストール
+
+まずは Docker 本体をインストールしなければなりません。公式サイトのこちらのページを参考にしました。
+
+`https://docs.docker.com/engine/install/centos/`
+
+インストールが終わったら、Jenkins ユーザを Docker グループに追加して Jenkins から Docker が使えるようにします。
+
+```
+sudo useradd -aG docker jenkins
+```
+
+### Dockerfile の作成
+
+上記の Puppeteer サイトにある Dockerfile をベースに必要な変更を加えていきます。ベースイメージはとりあえずそのまま node:12-slim にしました。そして Docker 化の一番の目的であるパッケージ群を下記のリストからコピーしてインストールの行に加えます。
+
+https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
+
+そしてテストを走らせるのに必要なファイルを全て Docker に COPY コマンドでコピーします。その他、前回は Jenkins のパイプラインスクリプトに記述していたモジュールインストールやテストスタートコマンドなども Dockerfile 内に移します。それが終わったら Github に Dockerfile をコミットします。
+
+### 新しいジョブの作成
+
+Jenkins で新しいジョブを作成し、パイプラインスクリプトを記述します。Github の設定は前回のジョブと同じです。その下に Docker 関連のコマンドを追加し、ビルドしてみます。試行錯誤の末、なんとかイメージはビルドできたのですが、そこからコンテナを起動する段階で謎のエラーが出て先に進めなくなりました。
+
+`Failed to move to new namespace`
+
+検索してみるとこちらにとても詳しい解説がありました。
+
+https://ndportmann.com/chrome-in-docker/
+
+こここに書いてあった解決策を丸ごと真似して無事にエラーが出なくなりました。そしてテストも無事に Docker 内で走るようになりました。
+
+### 最後に
+
+とりあえず Jenkins から Docker が使えるようにはなりました。本物の環境で使用する時には作成したコンテナの削除などしなければならないことがさらにあると思います。
+
+</section>

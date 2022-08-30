@@ -1,2 +1,1 @@
-# MyNotebook
-My Notebook Blog
+# My Notebook Blog project

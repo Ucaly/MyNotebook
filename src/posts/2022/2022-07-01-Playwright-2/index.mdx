@@ -1,0 +1,88 @@
+---
+title: Playwright 修行その2
+slug: learn-playwright-2
+date: 2022-08-01
+category: プログラミング
+tags: ['Playwright', 'Javascript']
+author: Ucaly
+published: false
+image: ../../../assets/tech/undraw_Coding_re_iv62.png
+---
+
+import { getImage, GatsbyImage } from 'gatsby-plugin-image'
+
+<section className="mdx-page">
+
+テストライブラリ Playwright をお試しで使ってみました。これはその忘備録です。
+
+### スクリプト作成
+
+Twitter をスクロールするのがだんだんおっくうになってきて、簡単に必要な情報が得られる方法はないかと思っていました。デベロッパー向けの API キーを申請したのですが、個人でしかも適当な理由を書いたせいか、いまだに承認されません。playwright でどこまで自動化できるかはわかりませんが、とりあえずページを開くところまでやってみました。
+
+公式サイトのドキュメントにある[ページオブジェクトモデル](https://playwright.dev/docs/test-pom)を真似しました。といってもログインページとホームページだけです。自動でログインしたいので 2 段階認証をオフにしました。
+
+### LoginPage
+
+```
+import { Page } from "playwright";
+import { LoginSelectors } from "./login.selectors";
+
+class LoginPage {
+  _page: Page;
+
+  constructor(page: Page) {
+    this._page = page;
+  }
+
+  async login(username: string, password: string): Promise<void> {
+    await this._page.click(LoginSelectors.LoginBtn)
+    await this._page.type(LoginSelectors.UsernameInput, username)
+    await this._page.click(LoginSelectors.NextBtn)
+    await this._page.type(LoginSelectors.PasswordInput, password)
+    await this._page.click(LoginSelectors.LoginFormBtn)
+  }
+}
+
+export default LoginPage
+```
+
+何度もログインすると警告メールが来るので、ログインの状態を保存して再利用できるという[こちら](https://playwright.dev/docs/auth)もとりあえず実装してみたいと思います。どうやら次の１行を足すだけでファイルにデータを保存してくれるようです。
+
+```
+await this._page.context().storageState({path: 'auth/login.json'})
+```
+
+一度ログインしてファイルに保存された後は、このファイルをコンテクストを作成するときに渡せばいいようです。
+
+```
+context = await browser.newContext({ storageState: 'auth/login.json' })
+```
+
+すでにログイン済みかどうかをチェックする方法はわかりませんでした。どなたかご存知の方教えてください。とりあえずファイルが存在するかどうかをチェックすることにしました。
+
+```
+  const browser = await chromium.launch({ headless: false });
+  let context: BrowserContext
+  let page: Page
+  if (await existsSync('auth/login.json')) {
+    context = await browser.newContext({ storageState: 'auth/login.json' })
+    page = await context.newPage();
+    await page.goto('https://twitter.com/');
+
+  } else {
+    context = await browser.newContext();
+    page = await context.newPage();
+    await page.goto('https://twitter.com/');
+    // const text = await page.evaluate(() => document.querySelector('#wob_tm').textContent);
+    // console.log(text);
+    const loginPage = new LoginPage(page);
+    await loginPage.login('account', 'password')
+  }
+
+```
+
+### まとめ
+
+元 Google の Puppetter 開発者が始めただけあって使用感はよく似ていると思います。すべての機能に目を通したわけではないの断言はできませんがドキュメンテーションは Playwright のほうが初心者にはとっつきやすいと思いました。今後も修行を続けます。
+
+</section>
