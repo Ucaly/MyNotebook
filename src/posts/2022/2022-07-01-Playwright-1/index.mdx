@@ -1,0 +1,78 @@
+---
+title: Playwright 修行その１
+slug: learn-playwright-1
+date: 2022-07-01
+category: プログラミング
+tags: ['Playwright', 'Javascript']
+author: Ucaly
+published: false
+image: ../../../assets/tech/undraw_Coding_re_iv62.png
+---
+
+import { getImage, GatsbyImage } from 'gatsby-plugin-image'
+
+<section className="mdx-page">
+
+テストライブラリ Playwright をお試しで使ってみました。これはその忘備録です。
+
+### セットアップ
+
+Playwright で Twitter のスクレイパーを作れないかと思ったのがきっかけです。最低限必要なライブラリは playwright だけのようです。さっそくプロジェクトを作って playwright をインストール。Typescript を使うので必要なものをさらに追加。
+
+```
+Usacals-Mac:Playwright-study usacal$ mkdir tweets_scraper
+Usacals-Mac:Playwright-study usacal$ cd tweets_scraper
+Usacals-Mac:tweets_scraper usacal$ yarn add -D typescript
+Usacals-Mac:tweets_scraper usacal$ yarn tsc --init
+yarn run v1.22.19
+warning package.json: No license field
+$ /Users/usacal/Playwright-study/tweets_scraper/node_modules/.bin/tsc --init
+```
+
+```
+Created a new tsconfig.json with:
+target: es2016
+module: commonjs
+strict: true
+esModuleInterop: true
+skipLibCheck: true
+forceConsistentCasingInFileNames: true
+```
+
+```
+Usacals-Mac:tweets_scraper usacal$ yarn init -y
+Usacals-Mac:tweets_scraper usacal$ yarn add -D ts-node @types/node
+Usacals-Mac:tweets_scraper usacal$ yarn add -D playwright
+```
+
+### package.json
+
+```
+{
+  "name": "tweets_scraper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn tsc",
+    "run": "ts-node ./src/index.ts",
+    "test": "node ./build/index.js",
+    "clean": "rm -rf ./build",
+    "rebuild": "yarn clean && yarn build"
+  },
+  "devDependencies": {
+  "@types/node": "^18.0.0",
+  "playwright": "^1.23.1",
+  "ts-node": "^10.8.2",
+  "typescript": "^4.7.4"
+  }
+}
+```
+
+### Locator
+
+公式サイトの Getting started セクションにはテストを書く例が載っていますが、今回はテストではないのでこちらはパス。こちらの[記事](https://dev.to/apify/how-to-scrape-the-web-with-playwright-3adh)を参考にしました。
+
+DOM の要素を指定してその状態を取得したりアクションを起こすという点では Selenium ベースのライブラリと同じです。が、DOM 要素をあつかう locator という API の特徴をつかむまで少し苦労しました。CSS などのセレクターを locator に指定すると、見つかった DOM 要素を Locator オブジェクトとして返してくれます。$ や $$ でエレメントそのものを取得するのとどう違うの？　こちらの[ページ](https://playwright.dev/docs/locators#locator-vs-elementhandle)に違いが説明されていますが、Locator はエレメントそのものではなく、エレメントを特定するポインタのようなもので、一度取得すれば、そのエレメントの状態がアップデートされても引き続き使用できるということらしいです。一番とまどったのは、エレメントが単数でも複数でも locator を使うということでした。$ や $$ であれば、前者は単数、後者の場合は Array が戻るとわかっているので、その後の処理はそれに応じて書くことができます。locator の場合、複数のエレメントが戻されることを想定しないといけないようで、ちょっとめんどうだなと思ってしまいました。とはいえ慣れてしまえば locator を使うメリットのほうが大きいようです。
+
+</section>

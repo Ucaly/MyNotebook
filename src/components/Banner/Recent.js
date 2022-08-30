@@ -13,12 +13,7 @@ const query = graphql`
           title
           date(formatString: "MMMM, Do YYYY")
           slug
-          image {
-            childImageSharp {
-              gatsbyImageData
-            }
           }
-        }
         id
       }
     }
@@ -34,16 +29,16 @@ const Recent = () => {
 
   return (
     <Wrapper>
-      <Title title="recent" />
+      <Title title="最近のノート" />
       {posts.map(post => {
-        const { title, slug, date, image } = post.frontmatter
+        const { title, slug, date } = post.frontmatter
         return (
           <Link to={`/posts/${slug}`} key={post.id} className="post">
-            <GatsbyImage
+            {/* {image && <GatsbyImage
               image={getImage(image)}
               alt={title}
               className="img"
-            ></GatsbyImage>
+            ></GatsbyImage> } */}
             <div>
               <h5>{title}</h5>
               <p>{date}</p>

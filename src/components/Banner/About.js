@@ -7,17 +7,17 @@ import styled from 'styled-components'
 const About = () => {
   return (
     <Wrapper>
-      <Title title="about me" />
+      <Title title="このサイトについて" />
       <StaticImage
-        src="../../assets/banner-about.jpeg"
+        src="../../assets/coffee_cup.jpeg"
         layout="fixed"
-        width={100}
-        height={100}
-        alt="author"
+        width={120}
+        height={120}
+        alt="site"
         className="img"
       />
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, eligendi.
+        記憶力が相当あやしくなってきたので後で見返せるように記録しています。IT関係やアメリカ生活など何でもあり。
       </p>
       <SocialLinks styleClass="banner-icons"></SocialLinks>
     </Wrapper>

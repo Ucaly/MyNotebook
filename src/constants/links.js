@@ -10,11 +10,11 @@ const Links = ({ styleClass, children }) => {
       </li>
       <li>
         <Link to="/posts" className="page-link">
-          Posts
+          Notes
         </Link>
         {children}
       </li>
-      <li>
+      {/* <li>
         <Link to="/newsletter" className="page-link">
           Newsletter
         </Link>
@@ -23,7 +23,7 @@ const Links = ({ styleClass, children }) => {
         <Link to="/post" className="page-link">
           Post
         </Link>
-      </li>
+      </li> */}
     </ul>
   )
 }

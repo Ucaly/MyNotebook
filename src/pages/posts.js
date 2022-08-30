@@ -10,7 +10,7 @@ const PostsPage = ({ data }) => {
   return (
     <Layout>
       <Hero />
-      <Posts posts={posts} title="all posts" />
+      <Posts posts={posts} title="all notes" />
     </Layout>
   )
 }
@@ -24,7 +24,6 @@ export const query = graphql`
           title
           author
           category
-          readTime
           date(formatString: "MMMM, Do YYYY")
           slug
           image {

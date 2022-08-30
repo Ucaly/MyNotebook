@@ -9,34 +9,36 @@ import { MDXRenderer } from 'gatsby-plugin-mdx'
 const PostTemplate = ({ data }) => {
   const {
     mdx: {
-      frontmatter: { title, category, image, date, embeddedImages },
+      frontmatter: { title, category, image, date },
       body,
     },
   } = data
-
+  console.log('image=', image);
   return (
     <Layout>
       <Hero />
       <Wrapper>
         {/* post info */}
         <article>
-          <GatsbyImage
+          {
+            image && <GatsbyImage
             image={getImage(image)}
             alt={title}
             className="main-img"
           />
+          }
           <div className="post-info">
             <span>{category}</span>
             <h2>{title}</h2>
             <p>{date}</p>
             <div className="underline"></div>
           </div>
-          <MDXRenderer embeddedImages={embeddedImages}>{body}</MDXRenderer>
+          <MDXRenderer >{body}</MDXRenderer>
         </article>
         {/* banner component */}
-        <article>
+        {/* <article>
           <Banner />
-        </article>
+        </article> */}
       </Wrapper>
     </Layout>
   )
@@ -49,13 +51,7 @@ export const query = graphql`
         title
         category
         date(formatString: "MMMM Do, YYYY")
-        readTime
         slug
-        embeddedImages {
-          childImageSharp {
-            gatsbyImageData
-          }
-        }
         image {
           childImageSharp {
             gatsbyImageData
@@ -68,8 +64,8 @@ export const query = graphql`
 `
 
 const Wrapper = styled.section`
-  width: 85vw;
-  max-width: 1100px;
+  width: 90vw;
+  max-width: 1500px;
   margin: 0 auto;
   margin-bottom: 4rem;
 
@@ -104,7 +100,7 @@ const Wrapper = styled.section`
       width: 92vw;
     }
     .main-img {
-      width: 75%;
+      width: 50%;
       display: block;
       margin: 0 auto;
     }
@@ -112,7 +108,7 @@ const Wrapper = styled.section`
   @media (min-width: 1170px) {
     & {
       display: grid;
-      grid-template-columns: 1fr 200px;
+      grid-template-columns: 1fr;
       column-gap: 4rem;
     }
   }

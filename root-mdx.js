@@ -5,7 +5,7 @@ import {
   Blockquote,
   Code,
   PrismSetup,
-} from './src/components/Complete'
+} from './src/components/Util'
 
 const components = {
   h2: Headings.myH2,

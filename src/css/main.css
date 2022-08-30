@@ -7,17 +7,31 @@ Variables
 :root {
   /* dark shades of primary color*/
 
-  --clr-primary-1: hsl(245, 91%, 17%);
+  --clr-primary-1: hsl(55, 88%, 14%);
+  --clr-primary-2: hsl(55, 88%, 23%);
+  --clr-primary-3: hsl(55, 88%, 32%);
+  --clr-primary-4: hsl(55, 87%, 41%);
+  --clr-primary-5: hsl(55, 87%, 50%);
+
+  /*--clr-primary-1: hsl(245, 91%, 17%);
   --clr-primary-2: hsl(245, 84%, 25%);
   --clr-primary-3: hsl(245, 81%, 29%);
   --clr-primary-4: hsl(245, 77%, 34%);
-  --clr-primary-5: hsl(245, 62%, 45%);
+  --clr-primary-5: hsl(245, 62%, 45%);*/
+
   /* lighter shades of primary color */
-  --clr-primary-6: hsl(245, 57%, 50%);
+  --clr-primary-6: hsl(55, 87%, 59%);
+  --clr-primary-7: hsl(55, 88%, 68%);
+  --clr-primary-8: hsl(55, 88%, 77%);
+  --clr-primary-9: hsl(54, 88%, 86%);
+  --clr-primary-10: hsl(54, 88%, 92%);
+
+  /*--clr-primary-6: hsl(245, 57%, 50%);
   --clr-primary-7: hsl(245, 65%, 59%);
   --clr-primary-8: hsl(245, 80%, 74%);
   --clr-primary-9: hsl(245, 94%, 87%);
-  --clr-primary-10: hsl(245, 87%, 94%);
+  --clr-primary-10: hsl(245, 87%, 94%);*/
+
   /* darkest grey - used for headings */
   --clr-grey-1: hsl(209, 61%, 16%);
   --clr-grey-3: hsl(209, 34%, 30%);
@@ -33,6 +47,7 @@ Variables
   --clr-red-light: hsl(360, 71%, 66%);
   --clr-white: #fff;
   --clr-black: #0a0c10;
+  --clr-logo: #5F8ADA;
   --ff-primary: 'Roboto', sans-serif;
   --ff-secondary: 'Open Sans', sans-serif;
   --transition: all 0.3s linear;
@@ -202,7 +217,7 @@ Navbar
 }
 .nav-logo {
   display: block;
-  height: 40px;
+  height: 100px;
 }
 .nav-logo img {
   height: 100%;
@@ -348,13 +363,21 @@ Hero
 */
 .hero {
   background: var(--clr-primary-10);
-  height: 12rem;
+  height: 15rem;
   position: relative;
   z-index: -1;
-  margin-bottom: 6rem;
+  margin-bottom: 2rem;
 }
 
-.hero::after {
+.hero-short {
+    background: var(--clr-primary-10);
+    height: 5rem;
+    position: relative;
+    z-index: -1;
+    margin-bottom: 2rem;
+}
+
+/*.hero::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -363,7 +386,7 @@ Hero
   width: 100%;
   background: url('../assets/vector.svg');
   background-size: cover;
-}
+}*/
 .hero-person {
   display: none !important;
 }
@@ -372,12 +395,12 @@ Hero
     height: 20rem;
   }
   .hero-person {
-    width: 20rem;
-    height: 20rem;
+    width: 17rem;
+    height: 17rem;
     display: block !important;
     position: absolute;
-    bottom: 0;
-    left: 60%;
+    bottom: 10;
+    left: 70%;
     transform: translate(-20%, 20%);
     z-index: 4;
   }
@@ -401,7 +424,7 @@ Posts Component
 .posts-title {
   font-weight: 700;
   text-transform: uppercase;
-  color: #e12d39;
+  color: var(--clr-logo);
   font-size: 1.25rem;
   margin-bottom: 2.5rem;
 }
@@ -414,7 +437,7 @@ Posts Component
 @media screen and (min-width: 1170px) {
   .posts-center {
     display: grid;
-    grid-template-columns: 1fr 250px;
+    grid-template-columns: 2fr 250px;
     column-gap: 1rem;
   }
 }

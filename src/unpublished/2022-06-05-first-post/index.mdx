@@ -1,0 +1,96 @@
+---
+title: Jenkinsのインストール
+slug: install-jenkins
+image: ./images/jenkins.png
+date: 2020-06-05
+category: Jenkins
+tag: Jenkins
+author: Ucaly
+published: false
+---
+
+<section className="mdx-page">
+
+Jenkins のインストールや設定はひんぱんにやるわけではないのでやり方を必ず忘れてしまいます。そこで今回は自分で後から参照できるようにメモとして残しておくことにしました
+
+### インストール
+
+実際のプラットフォームは RHEL なのですが、今回は練習として CentOS7 にインストールしてみました。Jenkins 公式サイトを参考にしました。
+
+`https://www.jenkins.io/doc/book/installing/#red-hat-centos`
+
+```
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo yum upgrade sudo yum install jenkins java-1.8.0-openjdk-devel
+sudo systemctl daemon-reload`
+```
+
+コマンド丸ごとコピーで問題なくインストールできました。さっそく Jenkins をスタートさせます。
+
+```
+sudo systemctl start jenkins`
+```
+
+ブラウザから http://localhost:8080 にアクセスし、Unlock Jenkins のページが開いたので赤い文字で表示されているアドミンパスワードへのパスをコピーし、ターミナルから cat します。
+
+```
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+表示されたパスワードをコピーしブラウザに戻ってペーストします。Continue
+をクリックするとプラグインをインストールする画面へ進みます。とりあえず Install
+suggested plugins
+を選択して推奨プラグインをインストールしました。インストールが終わるとアドミンユーザー設定画面になります。すべての項目に入力し
+Save and Continue をクリックします。問題がなければ Save and Finish
+をクリックして初期設定は完了です。
+
+### ファイアウォールの設定
+
+続いてパブリック IP でアクセスしてみたところ Jenkins
+は開きませんでした。使用した環境ではさらにファイアウォールの設定が必要のようでした。ファイアウォール設定のコマンドもインストール手順のページにあり、ほぼそのままで解決しました。
+
+```
+    sudo firewall-cmd --permanent --add-port=8080/tcp sudo firewall-cmd
+    --permanent --add-service=jenkins sudo firewall-cmd --reload
+```
+
+### Github の設定
+
+Jenkins がインストールできたところで、次に Github
+のリポジトリをジョブに設定し、簡単なテストを走らせるという手順をやってみました。まずはブラウザから
+Github に行って、トークンを取得します。自分のアカウントの Developper settings
+から Personal access tokens
+を選びます。パーミッションの種類を選ぶ画面になりますが、今回は admin:repo_hook
+のみ追加しました。どのパーミッションがどういう場面で必要になるのかという点はこれから勉強です。トークンが生成されたらコピーして保管します。
+
+Jenkins に戻り、Manage Jenkins をクリックし Credentials を選びます。Username
+with password のオプションを選択し、以下のように入力しました。
+
+Username: Github にアクセスする時のユーザ名
+Password: さきほどコピーしたトークン
+ID: 任意の名前 例 git_token
+Description: 任意
+
+今回は Github からクローンするだけなので設定はこれだけです
+
+### プラグイン、ツールの設定
+
+今回練習で使うテストは Google Puppeteer と Mocha
+で、あるサイトの画面をチェックするというものなので Node.js が必要です。Manage
+Jenkins から Manage Plugins を開き、NodeJS
+プラグインをインストールしました。インストール後は Jenkins
+の再起動が必要です。
+
+続いて Global Tools Setting のページを開くとそこに NodeJS
+が追加されているので、そこで必要なバージョンを選びます。今回のテストは yarn
+を使っているので Global npm packages to install で yarn も指定してました。
+
+### ジョブの設定
+
+New Item をクリックし、Pipeline を選び今回はジョブの設定画面に直で入力します
+
+Pipeline スクリプトのドキュメントをざっと読んでみたのですがよくわからなかったので、Snippet Generator で表示されたコードを使って試行錯誤した結果、上のようなコードになりました
+
+</section>

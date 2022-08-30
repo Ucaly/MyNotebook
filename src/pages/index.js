@@ -11,23 +11,22 @@ const IndexPage = ({ data }) => {
   return (
     <Layout>
       <Hero showPerson />
-      <Posts posts={posts} title="recently published" />
+      <Posts posts={posts} title="最近のノート" />
     </Layout>
   )
 }
 
 export const query = graphql`
   {
-    allMdx(limit: 3, sort: { fields: frontmatter___date, order: DESC }) {
+    allMdx(limit: 2, sort: { fields: frontmatter___date, order: DESC }) {
       nodes {
         excerpt
         frontmatter {
           title
-          author
           category
           date(formatString: "MMMM, Do YYYY")
           slug
-          readTime
+          tags
           image {
             childImageSharp {
               gatsbyImageData

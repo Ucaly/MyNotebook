@@ -7,7 +7,7 @@ const Banner = () => {
   return (
     <Wrapper>
       <About />
-      <Recent />
+      {/* <Recent /> */}
       <BannerCategories />
     </Wrapper>
   )
