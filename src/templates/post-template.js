@@ -4,6 +4,7 @@ import Hero from '../components/Hero'
 import styled from 'styled-components'
 import { GatsbyImage, getImage } from 'gatsby-plugin-image'
 import Banner from '../components/Banner'
+import HomeButton from '../components/Util/HomeButton'
 import { graphql } from 'gatsby'
 import { MDXRenderer } from 'gatsby-plugin-mdx'
 const PostTemplate = ({ data }) => {
@@ -34,6 +35,7 @@ const PostTemplate = ({ data }) => {
             <div className="underline"></div>
           </div>
           <MDXRenderer >{body}</MDXRenderer>
+          <HomeButton />
         </article>
         {/* banner component */}
         {/* <article>
