@@ -1,0 +1,56 @@
+---
+title: Playwright 再び
+slug: playwright-what-i-like
+date: 2023-09-25
+category: プログラミング
+tags: ['Playwright', 'Javascript']
+author: Ucaly
+published: false
+image: ../../../assets/tech/undraw_Coding_re_iv62.png
+---
+
+import { getImage, GatsbyImage } from 'gatsby-plugin-image'
+
+<section className="mdx-page">
+
+1年ほど前にテストライブラリ Playwright をお試しで使ってみて、すごい！と思ったのですが、ついに実際にテストを書くことになりました。なのでまた一から学び直しています。ご無沙汰していた間に Locator がかなり進化していました。これはいいな、と思った点をいくつか挙げてみます。
+
+### or
+
+これはうれしいです。条件によって表示されるエレメントが変わる場合、これまではいちいち条件をチェックkしたり、if を多用したり、ぐちゃぐちゃになりがちだったんですが、or を使うとスッキリ。よくあるサムネイルビューとリストビューが切り替えられるページの場合、こんな風に使えます。
+
+```
+const pageItems = await page.locator("data-id=thumbnailItems").or(await page.locator("data-id=listItems"))
+```
+
+どちらか見つかった方を返してくれるというシンプルさ。試してみましたけど、ちゃんと動きました。感動。これほんとにライフセーバー。
+
+
+### getByText
+
+これは名前の通り表示されているテキストにマッチしたエレメントを返してくれるのですが、使いようによっては万能選手かもしれません。リストが表示されているページで、ひとつのエレメントのコンテキストメニューを開いてその中のオプションをクリックするというテストを書いていたのですが、どうもうまくいきませんでした。あれこれ試行錯誤した後、結局こんな感じで案外シンプルにできました。
+
+```
+await page.locator("data-id=contextmenu").getByText("保存").click()
+
+```
+コンテキストメニューはダイナミックに生成されるので基本はページ上に一つしかないのでピンポイントで特定できます。メニューは５つくらいあるのですが、そしてその中の「保存」というテキストを探してクリックするというわけです。
+
+
+### scrollIntoViewIfNeeded
+
+これもテレビショッピング的な「こんなの欲しかった！」機能ですね。WebAPI にあるので自分でJavascript書けばいいのでしょうけど、こうやって標準で存在してくれるのはズボラな私にはありがたいです。DOM 上には存在するけどビューポートの外にあるとクリックがフェールしてしまいます。これを使えば勝手にスクロールして見えるようにしてくれるんです。試してみたら本当に動きました。
+
+
+```
+const listItem = await page.locator("data-id=listItem").nth(20)
+await listItem.scrollIntoViewIfNeeded()
+```
+
+よきよき!
+
+### まとめ
+
+まだ Playwright 初心者ですが、今後も修行を続けます。
+
+</section>
